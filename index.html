@@ -2,13 +2,13 @@
 
 <head>
 	<title>Yokai Watch 2 Befriend Calculator</title>
-
 <style>
 input {
 	padding: 10px;
 	margin: 3px;
 }
-table {
+table, th, td {
+	border: 1px solid black;
 }
 </style>
 </head>
@@ -18,19 +18,25 @@ table {
 	<h1>Yokai Watch 2 Befriend Calculator</h1>
 	<table>
 		<tr>
-			<td>
-				<input id="yk_name" placeholder="Yokai Name" oninput="calculate()" />
+			<th>
+				Yokai Name and number already befriended
+			</th>
+			<th>
+				OR: Difficulty Id
+			</th>
+		</tr>
+		<tr>
+			<td align="center">
+				<input id="yk_name" placeholder="Yokai Name" list="yks" oninput="calculate(true, true)"  />
 				<br />
-				<input id="yk_count" placeholder="Befriend Count" oninput="calculate()" />
+				<input id="yk_count" type="number" placeholder="Befriend Count" oninput="calculate(true)" />
 			</td>
 			<td>
-				<input id="bef_id" placeholder="Befriend Rate Id" onkeyup="calculate()" />
+				<input id="bef_id" type="number" placeholder="Befriend Rate Id" oninput="calculate()" />
 			</td>
 		</tr>
 	</table>
-	<br />
-	<br />
-	<br />
+	<h3>Befriend Bonuses</h3>
 	<table>
 		<tr>
 			<td>
