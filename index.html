@@ -17,66 +17,9 @@ table, th, td {
 
 <body>
 	<h1>Yokai Watch 2 Befriend Calculator</h1>
-	<p>Enter either your yokai name with how often you already befriended it OR the difficulty id (0-8)</p>
-	<table cellpadding="10px">
+	<h3>Global Bonuses</h3>
+	<table>
 		<tr>
-			<th>
-				Yokai Name
-			</th>
-			<th>
-				Difficulty Id
-			</th>
-		</tr>
-		<tr>
-			<td align="center">
-				<input id="yk_name" placeholder="Yokai Name" list="yks" oninput="calculate(true, true)"  />
-				<br />
-				<input id="yk_count" type="number" placeholder="Befriend Count" oninput="calculate(true)" />
-			</td>
-			<td>
-				<input id="bef_id" type="number" placeholder="Befriend Rate Id" oninput="calculate()" />
-			</td>
-		</tr>
-	</table>
-	<h3>Befriend Bonuses</h3>
-	<table cellpadding="10px">
-		<tr>
-			<td>
-				<input id="food_0" type="radio" name="food" onclick="calculate()" checked />
-				<label for="food_0">No food</label>
-				<br />
-				<input id="food_1" type="radio" name="food" onclick="calculate()" />
-				<label for="food_1">Food Tier 1</label>
-				<br />
-				<input id="food_2" type="radio" name="food" onclick="calculate()" />
-				<label for="food_2">Food Tier 2</label>
-				<br />
-				<input id="food_3" type="radio" name="food" onclick="calculate()" />
-				<label for="food_3">Food Tier 3</label>
-				<br />
-				<input id="food_4" type="radio" name="food" onclick="calculate()" />
-				<label for="food_4">Food Tier 4</label>
-				<br />
-				<br />
-				<input type="radio" id="fav_food" name="food_type" onclick="calculate()" />
-				<label for="fav_food">Favorite food</label>
-				<br />
-				<input type="radio" id="normal_food" name="food_type" onclick="calculate()" checked />
-				<label for="normal_food">Normal food</label>
-				<br />
-				<input type="radio" id="hat_food" name="food_type" onclick="calculate()" />
-				<label for="hat_food">Hated food</label>
-			</td>
-			<td>
-				<input id="whisp_0" type="radio" name="whisp" value="whisp_0" onclick="calculate()" checked />
-				<label for="whisp_0">No heart whisp</label>
-				<br />
-				<input id="whisp_1" type="radio" name="whisp" value="whisp_1" onclick="calculate()" />
-				<label for="whisp_1">Blue heart whisp</label>
-				<br />
-				<input id="whisp_2" type="radio" name="whisp" value="whisp_2" onclick="calculate()" />
-				<label for="whisp_2">Golden heart whisp</label>
-			</td>
 			<td>
 				<input type="checkbox" id="pop" onclick="calculate()" />
 				<label for="pop">Popularity skill or superstar soul</label>
@@ -84,19 +27,31 @@ table, th, td {
 				<input type="checkbox" id="unpop" onclick="calculate()" />
 				<label for="unpop">Unpopularity skill</label>
 				<br />
-				<input type="checkbox" id="poke" onclick="calculate()" />
-				<label for="poke">Befriend poke</label>
-				<br />
 				<input type="checkbox" id="shrine" onclick="calculate()" />
 				<label for="shrine">Shrine Bonus</label>
 				<br />
 			</td>
+			<td>
+				<input id="whisp_0" type="radio" name="whisp_%I" value="whisp_0" onclick="calculate()" checked />
+				<label for="whisp_0">No heart whisp</label>
+				<br />
+				<input id="whisp_1" type="radio" name="whisp_%I" value="whisp_1" onclick="calculate()" />
+				<label for="whisp_1">Blue heart whisp</label>
+				<br />
+				<input id="whisp_2" type="radio" name="whisp_%I" value="whisp_2" onclick="calculate()" />
+				<label for="whisp_2">Golden heart whisp</label>
+			</td>
 		</tr>
+
 	</table>
+	<p>Enter either your yokai name with how often you already befriended it OR the difficulty id (1-8)</p>
 
-	<h2 id="result">Calculated Chance: -%</h2>
+	<div id="data"></div>
 
+	<h2>Probabilities</h2>
+	<ul id="result"></ul>
 
+	<script src="build.js"></script>
 	<script src="befriend.js"></script>
 </body>
 

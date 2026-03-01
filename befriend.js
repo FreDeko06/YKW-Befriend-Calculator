@@ -399,57 +399,132 @@ const whispBonus = [ 0, 10, 100 ]
 const pokeBonus = 10;
 const shrineBonus = 1;
 
+function calcDiff(id) {
+	let befIdText = document.getElementById("bef_id_" + id);
+	let befCountText = document.getElementById("yk_count_" + id);
+	let ykName = document.getElementById("yk_name_" + id).value;
+	let ykCount = parseInt(befCountText.value);
+	if (isNaN(ykCount) || ykCount > 5 || !(ykName in ykData)) {
+		befIdText.value = "0";
+		alert("To calculate difficulty first enter the name of the yokai and how often you already befriended it.\nIf you already have 6 befriended your befriend chance becomes 0%");
+		return;
+	}
+	let befriendId = ykData[ykName][ykCount];
+	befIdText.value = befriendId;
 
-function calcChance(updateBefId, setCount) {
+	calculate();
+}
+
+function calcChance(id, updateBefId, setCount) {
 	let whisp = getTier("whisp");
-	let food = getTier("food");
-	let foodFactor = getFoodFactor();
+	let food = getTier("food_" + id);
+	let foodFactor = getFoodFactor(id);
 	let superstar = checkProp("pop");
 	let unpop = checkProp("unpop");
-	let poke = checkProp("poke");
+	let poke = checkProp("poke_" + id);
 	let shrine = checkProp("shrine");
 
-	let befIdText = document.getElementById("bef_id");
-	let befCountText = document.getElementById("yk_count");
+	let befIdText = document.getElementById("bef_id_" + id);
+	let befCountText = document.getElementById("yk_count_" + id);
 	let befriendId = parseInt(befIdText.value);
 
+	let ykName = document.getElementById("yk_name_" + id).value;
 	if (updateBefId) {
-		let ykName = document.getElementById("yk_name").value;
 		let ykCount = parseInt(befCountText.value);
 		if (isNaN(ykCount)) {
 			ykCount = 0;
 			if (setCount) befCountText.value = "0";
 		}
 		if (ykCount > 5 || !(ykName in ykData)) {
-			return 0;
+			befIdText.value = "0";
+			return [ykName, 0, 0];
 		}
 		befriendId = ykData[ykName][ykCount];
 		befIdText.value = befriendId;
 	}
 
 	if (isNaN(befriendId)) {
-		return "-";
+		return [ykName, 0, 0];
 	}
 	
 	if (befriendId < 1 || befriendId > 8) {
-		return 0;
+		return [ykName, 0, 0];
 	}
 
 	let chance = (1 / (2**(befriendId+2))) * 100;
 
 	chance += whispBonus[whisp];
-	chance += foodBonus[befriendId-1][food] * getFoodFactor();
+	chance += foodBonus[befriendId-1][food] * foodFactor;
 	chance += superstar ? popularityBonus[befriendId-1] : 0;
 	chance -= unpop ? unpopularityBonus[befriendId-1] : 0;
 	chance += poke ? pokeBonus : 0;
 	chance += shrine ? shrineBonus : 0;
 
-	return chance;
+	return [ykName, befriendId, chance/100];
 
 }
 
 function calculate(updateBefId = false, setCount = false) {
-	document.getElementById("result").innerHTML = `Calculated Chance: ${calcChance(updateBefId, setCount)}%`;
+	let list = [];
+	for (let i = 1;i <= 3;i++) {
+		let data = calcChance(i, updateBefId, setCount);
+		let chance = data[2];
+		document.getElementById(`result_${i}`).innerHTML = `Partial Probability: ${(chance*100).toFixed(2)}%`;
+		if (chance > 0) {
+			list.push(data);
+		}
+	}
+	setProbabilities(calculateEachChance(list));
+}
+
+function calculateEachChance(list) {
+	let maxDifficulty = 0;
+	for (let data of list) {
+		if (data[1] > maxDifficulty) {
+			maxDifficulty = data[1];
+		}
+	}
+	let result = {};
+	list.forEach((data) => {
+		if (!(data[0] in result)) {
+			result[data[0]] = 0;
+		}
+		if (data[2] > 1) data[2] = 1;
+	});
+	let ps = {
+		1: 0,
+		2: 0,
+		3: 0
+	};
+	for (let mask = 0; mask < (1 << list.length); mask++) {
+		let prob = 1;
+		let active = [];
+
+		for (let i = 0; i < list.length; i++) {
+			const occurs = (mask & (1 << i)) !== 0;
+
+			if (occurs) {
+				prob *= list[i][2];
+				active.push(list[i]);
+			}else {
+				prob *= 1 - list[i][2];
+			}
+		}
+
+		if (prob === 0 || active.length === 0) continue;
+
+		let maxValue = Math.max(...active.map(e => e[1]));
+
+		let winners = active.filter(e => e[1] === maxValue);
+
+		let share = prob / winners.length;
+		winners.forEach(w => {
+			result[w[0]] += share*100;
+		});
+	}
+
+	return result;
+	
 }
 
 function getTier(prefix) {
@@ -464,9 +539,27 @@ function checkProp(id) {
 	return document.getElementById(id).checked;
 }
 
-function getFoodFactor() {
-	let favFood = document.getElementById("fav_food").checked;
-	let hateFood = document.getElementById("hat_food").checked;
+function setProbabilities(dict) {
+	let result = document.getElementById("result");
+	result.innerHTML = "";
+	let sum = 0;
+	for (let key in dict) {
+		let h = document.createElement("li");
+		let c = dict[key];
+		sum += c;
+		h.innerHTML = `${key}: ${c.toFixed(2)}%`;
+		result.append(h);
+	}
+	let h = document.createElement("li");
+	h.innerHTML = `No Yokai: ${(100 - sum).toFixed(2)}%`;
+	result.append(h);
+
+
+}
+
+function getFoodFactor(id) {
+	let favFood = document.getElementById("fav_food_" + id).checked;
+	let hateFood = document.getElementById("hat_food_" + id).checked;
 
 	if (favFood) return 1.5;
 	if (hateFood) return 0.4;
