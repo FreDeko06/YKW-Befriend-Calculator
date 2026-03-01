@@ -460,7 +460,7 @@ function calcChance(id, updateBefId, setCount) {
 	chance += poke ? pokeBonus : 0;
 	chance += shrine ? shrineBonus : 0;
 
-	return [ykName, befriendId, chance/100];
+	return [ykName, ykName in ykData ? ykData[ykName][0] : befriendId, chance/100];
 
 }
 
