@@ -74,7 +74,7 @@ CHARA_FRIEND_RATE_INFO (
 		ShrineBonus|False
 )
 ```
-The value represents the percentage that gets added multiplied by 100, i.e. 1000 means 10%
+The value represents the percentage that gets added, multiplied by 100, i.e. 1000 means 10%. Except BaseChance where the value is the reciprocal of the base befriend probability, i.e. 8 means 1:8 means 12.5%.
 
 Also there are two bitflags:
 * `0x0CC4EC4E`: always 0% befriend probability
