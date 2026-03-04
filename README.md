@@ -51,7 +51,24 @@ Regardless of how often you already befriended this yokai, the yokai that has th
 For example: if both Pandle and Undy are selected, regardless of how often you befriended anyone of them, Undy will become your friend, because his friend rate descriptor (`0x00765444`) has a `4`Wazzat as last digit and Pandles only has a `1`.
 If there is a tie, one yokai with the highest difficulty id is selected randomly with equal probability.
 
+### Full example
+You are playing against Undy and two Pandles and haven't befriended anyone of them. The base probability for befriending Undy will be 1:64 or about 1.6%, for befriending each Pandle the probability
+will be 1:8 or 12.5%. If you now give Undy his favourite tier 4 food this probability gets increased: 1.6% + 7% = 8.6%. Now you also poke him: 8.6% + 10% = 18.6%. And you get a blue whisp with one heart: both Pandle's chances get increased: 12.5% + 10% = 22.5%. And Undy's chance also: 18.6% + 10% = 28.6%. 
+
+As the fight now ends these probabilities are applied for each yokai seperately. If you want to know the chance you will get Undy, it will just be the calculated 28.6%, because he has a higher difficulty. If however you want to calculate the chance of befriending Pandle in this example, the calculation becomes a bit more complicated. You have to calculate the probability that Undy will not get selected and at least one of the Pandles will:
+
+$$P(U) = 0.286$$
+$$P(P1) = 0.225$$
+$$P(P2) = 0.225$$
+$$P(P) = P((P1 \cup P2) \cap \neg U) = P(\neg U) * P(P1 \cup P2)$$
+$$= (1 - P(U)) * (P(P1) + P(P2) - P(P1 \cap P2))$$
+$$= (1 - 0.286) * (0.225 + 0.225 - 0.225*0.225)$$
+$$= 0.285 = 28.5\\%$$
+
+So the probability for befriending Pandle in this example will be 28.5%. 
+
 ### Other important notes
+* Generally befriending a specific yokai becomes harder if you've already befirended them.
 * It is impossible to befriend a yokai after a battle if you already befriended 6 of them.
 * Sometimes it can be better to give the yokai a tier 4 non-favorite food instead of a tier 1 favorite food.
 * If you get a golden whisp with 3 hearts, the yokai with the highest difficulty as last digit will always become your friend.
